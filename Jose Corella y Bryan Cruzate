@@ -4,54 +4,6 @@
 #define NUM_ESTUDIANTES 5
 #define NUM_MATERIAS 3
 
-float calcularPromedio(float notas[], int num_notas) {
-    float suma = 0;
-    for (int i = 0; i < num_notas; i++) {
-        suma += notas[i];
-    }
-    return suma / num_notas;
-}
-
-float encontrarMax(float notas[], int num_notas) {
-    float max = 0;
-    for (int i = 1; i < num_notas; i++) {
-        if (notas[i] > max) {
-            max = notas[i];
-        }
-    }
-    return max;
-}
-
-float encontrarMin(float notas[], int num_notas) {
-    float min = 10;
-    for (int i = 1; i < num_notas; i++) {
-        if (notas[i] < min) {
-            min = notas[i];
-        }
-    }
-    return min;
-}
-
-int contarAprobados(float notas[], int num_notas, float nota_aprobacion) {
-    int aprobados = 0;
-    for (int i = 0; i < num_notas; i++) {
-        if (notas[i] >= nota_aprobacion) {
-            aprobados++;
-        }
-    }
-    return aprobados;
-}
-
-int contarReprobados(float notas[], int num_notas, float nota_aprobacion) {
-    int reprobados = 0;
-    for (int i = 0; i < num_notas; i++) {
-        if (notas[i] < nota_aprobacion) {
-            reprobados++;
-        }
-    }
-    return reprobados;
-}
-
 int main() {
     char nombres[NUM_ESTUDIANTES][50];
     char materias[NUM_MATERIAS][50];
@@ -92,16 +44,31 @@ int main() {
             promedio_materia[j] += nota;
         }
 
-        promedio_estudiante[i] = calcularPromedio(notas[i], NUM_MATERIAS);
+        float suma = 0;
+        for (int k = 0; k < NUM_MATERIAS; k++) {
+            suma += notas[i][k];
+        }
+        promedio_estudiante[i] = suma / NUM_MATERIAS;
 
         getchar();
     }
 
     for (int j = 0; j < NUM_MATERIAS; j++) {
-        max_materia[j] = encontrarMax(notas[j], NUM_ESTUDIANTES);
-        min_materia[j] = encontrarMin(notas[j], NUM_ESTUDIANTES);
-        aprobados_materia[j] = contarAprobados(notas[j], NUM_ESTUDIANTES, nota_aprobacion);
-        reprobados_materia[j] = contarReprobados(notas[j], NUM_ESTUDIANTES, nota_aprobacion);
+        max_materia[j] = notas[0][j];
+        min_materia[j] = notas[0][j];
+        for (int i = 0; i < NUM_ESTUDIANTES; i++) {
+            if (notas[i][j] > max_materia[j]) {
+                max_materia[j] = notas[i][j];
+            }
+            if (notas[i][j] < min_materia[j]) {
+                min_materia[j] = notas[i][j];
+            }
+            if (notas[i][j] >= nota_aprobacion) {
+                aprobados_materia[j]++;
+            } else {
+                reprobados_materia[j]++;
+            }
+        }
         promedio_materia[j] /= NUM_ESTUDIANTES;
     }
 
