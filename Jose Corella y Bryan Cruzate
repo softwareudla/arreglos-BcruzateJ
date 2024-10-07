@@ -13,7 +13,7 @@ float calcularPromedio(float notas[], int num_notas) {
 }
 
 float encontrarMax(float notas[], int num_notas) {
-    float max = notas[0];
+    float max = 0;
     for (int i = 1; i < num_notas; i++) {
         if (notas[i] > max) {
             max = notas[i];
@@ -23,7 +23,7 @@ float encontrarMax(float notas[], int num_notas) {
 }
 
 float encontrarMin(float notas[], int num_notas) {
-    float min = notas[0];
+    float min = 10;
     for (int i = 1; i < num_notas; i++) {
         if (notas[i] < min) {
             min = notas[i];
@@ -61,15 +61,13 @@ int main() {
     float max_materia[NUM_MATERIAS], min_materia[NUM_MATERIAS];
     int aprobados_materia[NUM_MATERIAS] = {0}, reprobados_materia[NUM_MATERIAS] = {0};
     float nota_aprobacion = 6.0;
-    float max_general = 0;
+    float max_general = -1;
 
-   
     for (int j = 0; j < NUM_MATERIAS; j++) {
         printf("Ingrese el nombre de la materia %d: \n", j + 1);
         fgets(materias[j], 50, stdin);
         materias[j][strcspn(materias[j], "\n")] = 0;  
     }
-
 
     for (int i = 0; i < NUM_ESTUDIANTES; i++) {
         printf("Ingrese el nombre del estudiante %d:\n", i + 1);
@@ -82,7 +80,7 @@ int main() {
                 printf("Ingrese la nota de %s para %s (0-10): \n", materias[j], nombres[i]);
                 scanf("%f", &nota); 
                 if (nota < 0 || nota > 10) {
-                    printf("Error: La nota debe estar entre 0 y 10.\n");
+                    printf("ERROR\n");
                 }
             } while (nota < 0 || nota > 10);
             notas[i][j] = nota;
@@ -90,7 +88,36 @@ int main() {
             if (nota > max_general) {
                 max_general = nota;
             }
+
+            promedio_materia[j] += nota;
         }
 
-        getchar(); 
-    }
+        promedio_estudiante[i] = calcularPromedio(notas[i], NUM_MATERIAS);
+
+        getchar();
+    }
+
+    for (int j = 0; j < NUM_MATERIAS; j++) {
+        max_materia[j] = encontrarMax(notas[j], NUM_ESTUDIANTES);
+        min_materia[j] = encontrarMin(notas[j], NUM_ESTUDIANTES);
+        aprobados_materia[j] = contarAprobados(notas[j], NUM_ESTUDIANTES, nota_aprobacion);
+        reprobados_materia[j] = contarReprobados(notas[j], NUM_ESTUDIANTES, nota_aprobacion);
+        promedio_materia[j] /= NUM_ESTUDIANTES;
+    }
+
+    printf("\nResultados por estudiante:\n");
+    for (int i = 0; i < NUM_ESTUDIANTES; i++) {
+        printf("Estudiante: %s, Promedio: %.2f\n", nombres[i], promedio_estudiante[i]);
+    }
+
+    printf("\nResultados por materia:\n");
+    for (int j = 0; j < NUM_MATERIAS; j++) {
+        printf("Materia: %s, Promedio: %.2f, Maxima: %.2f, Minima: %.2f, Aprobados: %d, Reprobados: %d\n",
+               materias[j], promedio_materia[j], max_materia[j], min_materia[j],
+               aprobados_materia[j], reprobados_materia[j]);
+    }
+
+    printf("\nNota maxima general: %.2f\n", max_general);
+
+    return 0;
+}
